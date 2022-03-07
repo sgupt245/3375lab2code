@@ -1,0 +1,64 @@
+.equ display1,0xff200020
+.equ display2,0xff200030
+.equ endlist, 0xaaaaaaaa
+
+.global _start
+_start:	//this never repeats (used to initialize registers)
+	
+	ldr r0, =display1
+	ldr r1, =display2
+	ldr r3, =endlist
+	ldr r2, =hexcode		//r2 stores location of hexcode
+
+temp://end of code resets to this point
+
+	mov r4,#1
+	cmp r4,r5		//r4 would act as a counter which increments 
+					//every time 'timer' ticks, r5 would remain 0 to compare with r4
+	bgt counterloop1
+	bal default
+	
+	
+	
+default:
+	
+	//ldr r11, =0x3F3F3F06
+	//ldr r12, =0x3F3F
+	str r11, [r0]
+	str r12, [r2]
+	bgt temp
+	
+	
+counterloop1://this loop will increment the first display
+
+add r2, r2, #4		//incrementing r2
+
+
+cmp r2,r3 		//checks if r2=r3 if true then will need to do: reset r2 value and enter loop for second display
+bgt counterloop2	//bgt and bal trigger if cmp=true otherwise are ignored
+bal default
+
+movw r11, [r2]	//incorrect function: needs to overwrite lowest 8 bits to what is stored in r2	
+mov r4,#0		//resets the 'counter' 	
+
+bgt default //goes to default loop
+
+
+counterloop2: 
+
+	
+	
+	
+	
+	
+	
+	.data
+hexcode: 
+	.word 0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x7,0x7F,0x67
+	
+	
+	
+	
+	
+	
+	
